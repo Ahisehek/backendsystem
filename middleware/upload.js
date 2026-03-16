@@ -1,0 +1,56 @@
+// const multer = require('multer');
+// const path = require('path');
+
+// // File storage config
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'uploads/venderpic'); // Store in /uploads folder
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, `${Date.now()}-${file.originalname}`);
+//   }
+// });
+
+// const upload = multer({ storage });
+
+// module.exports = upload;
+
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+
+// Configure storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    let folder;
+
+    // Customize folder based on route
+    if (req.originalUrl.includes("/vender")) {
+      folder = "uploads/vendorPics";
+    } else if (req.originalUrl.includes("/vehicle")) {
+      folder = "uploads/vehiclePics";
+    } else if (req.originalUrl.includes("/ticket")) {
+      folder = "uploads/ticketPics";
+    } else {
+      folder = "uploads/default"; // ✅ Fixed here
+    }
+
+    // Create the folder if it doesn't exist
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder, { recursive: true });
+    }
+
+    cb(null, folder);
+  },
+
+  filename: (req, file, cb) => {
+    // Sanitize filename
+    const cleanOriginalName = file.originalname.replace(/\s+/g, "-");
+    const uniqueName = `${Date.now()}-${cleanOriginalName}`;
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({ storage });
+
+module.exports = upload;
