@@ -18,22 +18,39 @@ if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
-
 const server = http.createServer(app);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200
+  max: 200,
 });
 
 app.use(limiter);
 
-// ✅ ADD CORS MIDDLEWARE BEFORE ANY ROUTES
-app.use(cors({
- origin: "http://localhost:5173",
-  credentials: true,
-}));
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://systemm-git-main-ahiseheks-projects.vercel.app",
+];
 
+// ✅ ADD CORS MIDDLEWARE BEFORE ANY ROUTES
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173",
+//     credentials: true,
+//   }),
+// );
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  }),
+);
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 
@@ -41,12 +58,11 @@ app.use(cookieParser());
 app.use(helmet());
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "allowedOrigins",
     methods: ["GET", "POST", "PATCH"],
     credentials: true,
   },
 });
-
 
 // Routes
 const authRoutes = require("./routes/auth");
@@ -91,14 +107,15 @@ io.on("connection", (socket) => {
 });
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected");
     server.listen(process.env.PORT, () => {
       console.log(`Server running on http://localhost:${process.env.PORT}`);
     });
   })
- .catch((err) => {
-  console.error("MongoDB Connection Error:", err);
-  process.exit(1);
-});
+  .catch((err) => {
+    console.error("MongoDB Connection Error:", err);
+    process.exit(1);
+  });
