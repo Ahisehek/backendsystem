@@ -59,7 +59,7 @@ app.use(cookieParser());
 app.use(helmet());
 const io = new Server(server, {
   cors: {
-    origin: "allowedOrigins",
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PATCH"],
     credentials: true,
   },
