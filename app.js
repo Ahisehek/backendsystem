@@ -30,6 +30,7 @@ app.use(limiter);
 const allowedOrigins = [
   "http://localhost:5173",
   "https://systemm-git-main-ahiseheks-projects.vercel.app",
+  "https://systemm-five.vercel.app",
 ];
 
 // ✅ ADD CORS MIDDLEWARE BEFORE ANY ROUTES
