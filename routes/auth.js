@@ -202,14 +202,13 @@ router.get("/me", auth, async (req, res) => {
     res.json({
       name: user.name,
       email: user.email,
-      role: user.role,
+      role: user.role, // ✅ MUST
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });
-
 // ================= USER PROFILE =================
 router.get("/user-profile", auth, async (req, res) => {
   try {
