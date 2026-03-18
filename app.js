@@ -33,14 +33,6 @@ const allowedOrigins = [
   "https://systemm-five.vercel.app",
 ];
 
-// ✅ ADD CORS MIDDLEWARE BEFORE ANY ROUTES
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     credentials: true,
-//   }),
-// );
-
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -61,7 +53,7 @@ app.use(helmet());
 // Socket.io
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: true,
     methods: ["GET", "POST", "PATCH", "OPTIONS"],
     credentials: true,
   },
