@@ -111,32 +111,33 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/user-profile", auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.userId).select("name email");
+// router.get("/user-profile", auth, async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user.userId).select("name email");
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
 
-    res.json({ name: user.name, email: user.email });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+//     res.json({ name: user.name, email: user.email });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 
-router.get("/me", auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.userId).select("name role");
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json({ name: user.name, role: user.role }); // ✅ MUST include role
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
+// router.get("/me", auth, async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user.userId).select("name role");
+//     if (!user) return res.status(404).json({ message: "User not found" });
+//     res.json({ name: user.name, role: user.role }); // ✅ MUST include role
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 
 // Logout
+
 router.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.json({ message: "Logged out" });
