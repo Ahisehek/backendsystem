@@ -53,7 +53,7 @@ app.use(helmet());
 // Socket.io
 const io = new Server(server, {
   cors: {
-    origin: true,
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PATCH", "OPTIONS"],
     credentials: true,
   },
@@ -68,25 +68,24 @@ const gstRoutes = require("./routes/gst");
 const fleetRoutes = require("./routes/fleet");
 
 const igroupRoutes = require("./routes/igroup");
-
-// ✅ Inject io into itemRoutes
 const itemRoutes = require("./routes/item")(io);
 const venderRoutes = require("./routes/vender")(io);
 const vehicleRoutes = require("./routes/vehicle")(io);
 const ticketRoutes = require("./routes/ticket")(io);
 
-// Use routes
-// app.use("/api", authRoutes);
-// app.use("/api", bankRoutes);
-// app.use("/site", siteRoutes);
-// app.use("/unit", unitRoutes);
-// app.use("/gst", gstRoutes);
-// app.use("/fleet", fleetRoutes);
-// app.use("/item", itemRoutes);
-// app.use("/vender", venderRoutes);
-// app.use("/vehicle", vehicleRoutes);
-// app.use("/ticket", ticketRoutes);
-// app.use("/igroup", igroupRoutes);
+//Use routes
+
+app.use("/api", authRoutes);
+app.use("/api", bankRoutes);
+app.use("/site", siteRoutes);
+app.use("/unit", unitRoutes);
+app.use("/gst", gstRoutes);
+app.use("/fleet", fleetRoutes);
+app.use("/item", itemRoutes);
+app.use("/vender", venderRoutes);
+app.use("/vehicle", vehicleRoutes);
+app.use("/ticket", ticketRoutes);
+app.use("/igroup", igroupRoutes);
 
 // Serve uploads
 app.use("/uploads", express.static("uploads"));
