@@ -76,17 +76,17 @@ const vehicleRoutes = require("./routes/vehicle")(io);
 const ticketRoutes = require("./routes/ticket")(io);
 
 // Use routes
-app.use("/api", authRoutes);
-app.use("/api", bankRoutes);
-app.use("/site", siteRoutes);
-app.use("/unit", unitRoutes);
-app.use("/gst", gstRoutes);
-app.use("/fleet", fleetRoutes);
-app.use("/item", itemRoutes);
-app.use("/vender", venderRoutes);
-app.use("/vehicle", vehicleRoutes);
-app.use("/ticket", ticketRoutes);
-app.use("/igroup", igroupRoutes);
+// app.use("/api", authRoutes);
+// app.use("/api", bankRoutes);
+// app.use("/site", siteRoutes);
+// app.use("/unit", unitRoutes);
+// app.use("/gst", gstRoutes);
+// app.use("/fleet", fleetRoutes);
+// app.use("/item", itemRoutes);
+// app.use("/vender", venderRoutes);
+// app.use("/vehicle", vehicleRoutes);
+// app.use("/ticket", ticketRoutes);
+// app.use("/igroup", igroupRoutes);
 
 // Serve uploads
 app.use("/uploads", express.static("uploads"));
