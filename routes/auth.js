@@ -102,7 +102,7 @@ router.post("/login", async (req, res) => {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
       secure: true,
-      sameSite: "Strict", // 1 day
+      sameSite: "None", // 1 day
     });
 
     res.json({ message: "Login successful" });
