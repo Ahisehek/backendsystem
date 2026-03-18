@@ -1,69 +1,144 @@
-const express = require("express");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
-const auth = require("../middleware/authmiddle");
-const { redirect } = require("react-router-dom");
+// const express = require("express");
+// const bcrypt = require("bcryptjs");
+// const jwt = require("jsonwebtoken");
+// const User = require("../models/User");
+// const auth = require("../middleware/authmiddle");
+// const { redirect } = require("react-router-dom");
 
-const router = express.Router();
+// const router = express.Router();
 
-// Register
 // router.post("/register", async (req, res) => {
-//   const { name, email, password } = req.body;
+//   let { name, mobile, email, password, role = "user", secretKey } = req.body;
+
+//   // Normalize role
+//   role = role.toLowerCase();
 
 //   try {
-//     let user = await User.findOne({ email });
-//     if (user) return res.status(400).json({ message: "User already exists" });
+//     // 1. Check if email already exists
+//     const existingUser = await User.findOne({ email });
+//     if (existingUser) {
+//       return res.status(400).json({ message: "User already exists" });
+//     }
 
+//     // 2. If role is 'admin', validate secret key
+//     if (role === "admin" && secretKey !== process.env.ADMIN_SECRET_KEY) {
+//       return res
+//         .status(403)
+//         .json({ message: "Unauthorized: Invalid secret key" });
+//     }
+
+//     // 3. Hash the password
 //     const hashedPassword = await bcrypt.hash(password, 10);
 
-//     user = new User({ name, email, password: hashedPassword, role:"user" });
-//     await user.save();
+//     // 4. Save user or admin
+//     const newUser = new User({
+//       name,
+//       mobile,
+//       email,
+//       password: hashedPassword,
+//       role,
+//     });
 
-//     res.status(201).json({ message: "User registered" });
+//     await newUser.save();
+
+//     res.status(201).json({ message: `${role} registered successfully` });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
+
+// // Login
+// router.post("/login", async (req, res) => {
+//   const { email, password } = req.body;
+
+//   try {
+//     const user = await User.findOne({ email });
+//     if (!user) return res.status(400).json({ message: "Invalid credentials" });
+
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch)
+//       return res.status(400).json({ message: "Invalid credentials" });
+
+//     const token = jwt.sign(
+//       { userId: user._id, name: user.name, role: user.role }, // ✅ include role
+//       process.env.JWT_SECRET,
+//       { expiresIn: "1d" },
+//     );
+//     res.cookie("token", token, {
+//       httpOnly: true,
+//       maxAge: 24 * 60 * 60 * 1000,
+//       secure: true,
+//       sameSite: "None", // 1 day
+//     });
+
+//     res.json({ message: "Login successful" });
 //   } catch (err) {
 //     res.status(500).json({ message: "Server error" });
 //   }
 // });
 
-// router.post("/create-admin", async (req,res)=>{
-//   const{name,email,password,secretKey}= req.body;
-//   if(role === 'Admin' && secretKey!==process.env.ADMIN_SECRET_KEY){
-//     return res.status(404).json({massage:"unauthorized"});
+// router.get("/me", auth, async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user.userId).select("name role");
+//     if (!user) return res.status(404).json({ message: "User not found" });
+
+//     res.json({ name: user.name, role: user.role });
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error" });
 //   }
-//    const hashedPassword = await bcrypt.hash(password, 10);
+// });
 
-//     admin = new User({ name, email, password: hashedPassword, role:"admin" });
-//     await admin.save();
+// // Logout
 
-//     res.json({massage:"admin created successfully"});
-// })
-// ✅ This unified route handles both users and admins
+// router.get("/logout", (req, res) => {
+//   res.clearCookie("token", {
+//     httpOnly: true,
+//     secure: true,
+//     sameSite: "None",
+//     path: "/",
+//   });
+//   res.json({ message: "Logged out" });
+// });
 
+// module.exports = router;
+
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const auth = require("../middleware/authmiddle");
+
+const router = express.Router();
+
+// ================= REGISTER =================
 router.post("/register", async (req, res) => {
   let { name, mobile, email, password, role = "user", secretKey } = req.body;
 
-  // Normalize role
   role = role.toLowerCase();
 
   try {
-    // 1. Check if email already exists
+    // Check existing user
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // 2. If role is 'admin', validate secret key
-    if (role === "admin" && secretKey !== process.env.ADMIN_SECRET_KEY) {
-      return res
-        .status(403)
-        .json({ message: "Unauthorized: Invalid secret key" });
+    // 🔐 Secure role handling
+    if (role === "admin") {
+      if (secretKey !== process.env.ADMIN_SECRET_KEY) {
+        return res
+          .status(403)
+          .json({ message: "Unauthorized: Invalid secret key" });
+      }
+    } else {
+      role = "user"; // force user role
     }
 
-    // 3. Hash the password
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 4. Save user or admin
+    // Save user
     const newUser = new User({
       name,
       mobile,
@@ -81,7 +156,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Login
+// ================= LOGIN =================
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -93,16 +168,20 @@ router.post("/login", async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
+    // Create token
     const token = jwt.sign(
-      { userId: user._id, name: user.name, role: user.role }, // ✅ include role
+      { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1d" },
     );
+
+    // Set cookie
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
       secure: true,
-      sameSite: "None", // 1 day
+      sameSite: "None",
+      path: "/",
     });
 
     res.json({ message: "Login successful" });
@@ -111,36 +190,52 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// router.get("/user-profile", auth, async (req, res) => {
-//   try {
-//     const user = await User.findById(req.user.userId).select("name email");
+// ================= GET CURRENT USER =================
+router.get("/me", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select("name email role");
 
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-//     res.json({ name: user.name, email: user.email });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
+    res.json({
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
-// router.get("/me", auth, async (req, res) => {
-//   try {
-//     const user = await User.findById(req.user.userId).select("name role");
-//     if (!user) return res.status(404).json({ message: "User not found" });
-//     res.json({ name: user.name, role: user.role }); // ✅ MUST include role
-//   } catch (err) {
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
+// ================= USER PROFILE =================
+router.get("/user-profile", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select("name email");
 
-// Logout
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
+    res.json({ name: user.name, email: user.email });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// ================= LOGOUT =================
 router.get("/logout", (req, res) => {
-  res.clearCookie("token");
-  res.json({ message: "Logged out" });
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    path: "/",
+  });
+
+  res.json({ message: "Logged out successfully" });
 });
 
 module.exports = router;
