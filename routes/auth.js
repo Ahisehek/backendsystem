@@ -5,7 +5,6 @@ const User = require("../models/User");
 const auth = require("../middleware/authmiddle");
 const { redirect } = require("react-router-dom");
 
-
 const router = express.Router();
 
 // Register
@@ -64,7 +63,7 @@ router.post("/register", async (req, res) => {
     // 3. Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 4. Save user or admin 
+    // 4. Save user or admin
     const newUser = new User({
       name,
       mobile,
@@ -97,12 +96,12 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, name: user.name, role: user.role }, // ✅ include role
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );  
+      { expiresIn: "1d" },
+    );
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      secure: true, 
+      secure: true,
       sameSite: "Strict", // 1 day
     });
 
@@ -112,8 +111,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-
-router.get("/user-profile",auth,  async (req, res) => {
+router.get("/user-profile", async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("name email");
     if (!user) {
@@ -127,7 +125,7 @@ router.get("/user-profile",auth,  async (req, res) => {
   }
 });
 
-router.get("/me", auth, async (req, res) => {
+router.get("/me", async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("name role");
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -137,14 +135,10 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
-
-
 // Logout
 router.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.json({ message: "Logged out" });
 });
-
-
 
 module.exports = router;
