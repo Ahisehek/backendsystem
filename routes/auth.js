@@ -111,9 +111,10 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/user-profile", async (req, res) => {
+router.get("/user-profile", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("name email");
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -125,7 +126,7 @@ router.get("/user-profile", async (req, res) => {
   }
 });
 
-router.get("/me", async (req, res) => {
+router.get("/me", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("name role");
     if (!user) return res.status(404).json({ message: "User not found" });
