@@ -53,7 +53,7 @@ app.use(
     credentials: true,
   }),
 );
-app.options("*", cors());
+app.options("/*", cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(helmet());
@@ -62,7 +62,7 @@ app.use(helmet());
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
-    methods: ["GET", "POST", "PATCH"],
+    methods: ["GET", "POST", "PATCH", "OPTIONS"],
     credentials: true,
   },
 });
