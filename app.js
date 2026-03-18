@@ -40,6 +40,7 @@ const allowedOrigins = [
 //     credentials: true,
 //   }),
 // );
+
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -52,11 +53,12 @@ app.use(
     credentials: true,
   }),
 );
+app.options("*", cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
+app.use(helmet());
 
 // Socket.io
-app.use(helmet());
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
