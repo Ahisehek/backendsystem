@@ -52,7 +52,11 @@ app.use(
 // ================= MIDDLEWARE =================
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  }),
+);
 
 // ================= SOCKET.IO =================
 const io = new Server(server, {
