@@ -4,9 +4,8 @@ const router = express.Router();
 const Fleet = require("../models/Fleet");
 const adminonly = require("../middleware/adminonly");
 
-
 // Add a fleet
-router.post("/addfleet",  async (req, res) => {
+router.post("/addfleet", authmiddle, async (req, res) => {
   const { name } = req.body;
 
   if (!name) return res.status(400).json({ message: "Fleet name is required" });
@@ -37,7 +36,7 @@ router.get("/fleetlist", async (req, res) => {
 });
 
 // Delete a fleet
-router.delete("/delete/:name", async (req, res) => {
+router.delete("/delete/:name", authmiddle, async (req, res) => {
   try {
     const { name } = req.params;
     const deleted = await Fleet.findOneAndDelete({ name });

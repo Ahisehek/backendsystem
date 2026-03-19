@@ -5,7 +5,7 @@ const Gst = require("../models/Gst");
 const adminonly = require("../middleware/adminonly");
 
 // Add a gst
-router.post("/addgst", adminonly, async (req, res) => {
+router.post("/addgst", authmiddle, adminonly, async (req, res) => {
   console.log(req.body);
   const { name } = req.body;
 
@@ -37,7 +37,7 @@ router.get("/gstlist", async (req, res) => {
 });
 
 // Delete a gst
-router.delete("/delete/:name", adminonly, async (req, res) => {
+router.delete("/delete/:name", authmiddle, adminonly, async (req, res) => {
   try {
     const { name } = req.params;
     const deleted = await Gst.findOneAndDelete({ name });

@@ -5,7 +5,7 @@ const Igroup = require("../models/Igroup");
 const adminonly = require("../middleware/adminonly");
 
 // Add a igroup
-router.post("/add", adminonly, async (req, res) => {
+router.post("/add", authmiddle, adminonly, async (req, res) => {
   const { name } = req.body;
 
   if (!name)
@@ -37,7 +37,7 @@ router.get("/list", async (req, res) => {
 });
 
 // Delete a igroup
-router.delete("/delete/:name", adminonly, async (req, res) => {
+router.delete("/delete/:name", authmiddle, adminonly, async (req, res) => {
   try {
     const { name } = req.params;
     const deleted = await Igroup.findOneAndDelete({ name });

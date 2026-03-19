@@ -15,7 +15,7 @@ router.get("/allunit", async (req, res) => {
 
 // Add a new unit
 // In your POST /add route
-router.post("/addunit", adminonly, async (req, res) => {
+router.post("/addunit", authmiddle, adminonly, async (req, res) => {
   const { fullName, sortName } = req.body;
 
   if (!fullName || !sortName) {
@@ -41,7 +41,7 @@ router.post("/addunit", adminonly, async (req, res) => {
 });
 
 // Delete unit by ID
-router.delete("/:id", adminonly, async (req, res) => {
+router.delete("/:id", authmiddle, adminonly, async (req, res) => {
   try {
     const unit = await Unit.findByIdAndDelete(req.params.id);
     if (!unit) return res.status(404).json({ message: "Unit not found" });
