@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const Gst = require("../models/Gst");
 const adminonly = require("../middleware/adminonly");
+const authmiddle = require("../middleware/authmiddle");
 
 // Add a gst
 router.post("/addgst", authmiddle, adminonly, async (req, res) => {

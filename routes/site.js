@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Site = require("../models/Site");
 const adminonly = require("../middleware/adminonly");
+const authmiddle = require("../middleware/authmiddle");
 
 // Get all sites
 router.get("/allsite", async (req, res) => {
@@ -15,7 +16,7 @@ router.get("/allsite", async (req, res) => {
 
 // Add a new site
 // In your POST /add route
-router.post("/addsite", adminonly, async (req, res) => {
+router.post("/addsite", authmiddle, adminonly, async (req, res) => {
   const { fullName, sortName } = req.body;
 
   if (!fullName || !sortName) {
@@ -41,7 +42,7 @@ router.post("/addsite", adminonly, async (req, res) => {
 });
 
 // Delete site by ID
-router.delete("/:id", adminonly, async (req, res) => {
+router.delete("/:id", authmiddle, adminonly, async (req, res) => {
   try {
     const site = await Site.findByIdAndDelete(req.params.id);
     if (!site) return res.status(404).json({ message: "Site not found" });
