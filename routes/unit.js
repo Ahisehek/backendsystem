@@ -15,11 +15,13 @@ router.get("/allunit", async (req, res) => {
 
 // Add a new unit
 // In your POST /add route
-router.post("/addunit", async (req, res) => {
+router.post("/addunit", adminonly, async (req, res) => {
   const { fullName, sortName } = req.body;
 
   if (!fullName || !sortName) {
-    return res.status(400).json({ message: "Full Name and Sort Name are required" });
+    return res
+      .status(400)
+      .json({ message: "Full Name and Sort Name are required" });
   }
 
   try {
@@ -38,10 +40,8 @@ router.post("/addunit", async (req, res) => {
   }
 });
 
-
-
 // Delete unit by ID
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", adminonly, async (req, res) => {
   try {
     const unit = await Unit.findByIdAndDelete(req.params.id);
     if (!unit) return res.status(404).json({ message: "Unit not found" });

@@ -4,10 +4,9 @@ const router = express.Router();
 const Gst = require("../models/Gst");
 const adminonly = require("../middleware/adminonly");
 
-
 // Add a gst
-router.post("/addgst", async (req, res) => {
-    console.log(req.body);
+router.post("/addgst", adminonly, async (req, res) => {
+  console.log(req.body);
   const { name } = req.body;
 
   if (!name) return res.status(400).json({ message: "Gst name is required" });
@@ -38,7 +37,7 @@ router.get("/gstlist", async (req, res) => {
 });
 
 // Delete a gst
-router.delete("/delete/:name", async (req, res) => {
+router.delete("/delete/:name", adminonly, async (req, res) => {
   try {
     const { name } = req.params;
     const deleted = await Gst.findOneAndDelete({ name });

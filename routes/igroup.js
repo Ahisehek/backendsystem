@@ -5,10 +5,11 @@ const Igroup = require("../models/Igroup");
 const adminonly = require("../middleware/adminonly");
 
 // Add a igroup
-router.post("/add", async (req, res) => {
+router.post("/add", adminonly, async (req, res) => {
   const { name } = req.body;
 
-  if (!name) return res.status(400).json({ message: "Igroup name is required" });
+  if (!name)
+    return res.status(400).json({ message: "Igroup name is required" });
 
   try {
     const existing = await Igroup.findOne({ name });
@@ -36,7 +37,7 @@ router.get("/list", async (req, res) => {
 });
 
 // Delete a igroup
-router.delete("/delete/:name", async (req, res) => {
+router.delete("/delete/:name", adminonly, async (req, res) => {
   try {
     const { name } = req.params;
     const deleted = await Igroup.findOneAndDelete({ name });
