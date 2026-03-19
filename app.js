@@ -10,7 +10,6 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
-const adminonly = require("./middleware/adminonly.js");
 
 const app = express();
 const server = http.createServer(app);
@@ -80,11 +79,11 @@ const ticketRoutes = require("./routes/ticket")(io);
 
 // API Routes
 app.use("/api", authRoutes);
-app.use("/api", adminonly, bankRoutes);
+app.use("/api", bankRoutes);
 
-app.use("/site", adminonly, siteRoutes);
-app.use("/unit", adminonly, unitRoutes);
-app.use("/gst", adminonly, gstRoutes);
+app.use("/site", siteRoutes);
+app.use("/unit", unitRoutes);
+app.use("/gst", gstRoutes);
 app.use("/fleet", fleetRoutes);
 app.use("/item", itemRoutes);
 app.use("/vender", venderRoutes);

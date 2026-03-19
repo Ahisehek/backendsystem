@@ -5,7 +5,7 @@ const Bank = require("../models/Bank");
 const adminonly = require("../middleware/adminonly");
 
 // Add a bank
-router.post("/add", async (req, res) => {
+router.post("/add", adminonly, async (req, res) => {
   const { name } = req.body;
 
   if (!name) return res.status(400).json({ message: "Bank name is required" });
@@ -36,7 +36,7 @@ router.get("/list", async (req, res) => {
 });
 
 // Delete a bank
-router.delete("/delete/:name", async (req, res) => {
+router.delete("/delete/:name", adminonly, async (req, res) => {
   try {
     const { name } = req.params;
     const deleted = await Bank.findOneAndDelete({ name });
