@@ -27,11 +27,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // ================= CORS (FIXED) =================
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://systemm-git-main-ahiseheks-projects.vercel.app",
-  "https://systemm-five.vercel.app",
-];
+const allowedOrigins = ["https://systemm-five.vercel.app"];
 
 app.use(
   cors({
