@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const Igroup = require("../models/Igroup");
 const adminonly = require("../middleware/adminonly");
+const authmiddle = require("../middleware/authmiddle");
 
 // Add a igroup
 router.post("/add", authmiddle, adminonly, async (req, res) => {
