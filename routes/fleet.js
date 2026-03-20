@@ -10,7 +10,7 @@ router.post("/addfleet", authmiddle, adminonly, async (req, res) => {
   const { name } = req.body;
 
   if (!name) return res.status(400).json({ message: "Fleet name is required" });
-
+  name = name.toUpperCase();
   try {
     const existing = await Fleet.findOne({ name });
     if (existing) {

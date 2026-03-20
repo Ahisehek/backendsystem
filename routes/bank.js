@@ -6,11 +6,11 @@ const adminonly = require("../middleware/adminonly");
 const authmiddle = require("../middleware/authmiddle");
 
 // Add a bank
-router.post("/add",authmiddle, adminonly, async (req, res) => {
+router.post("/add", authmiddle, adminonly, async (req, res) => {
   const { name } = req.body;
 
   if (!name) return res.status(400).json({ message: "Bank name is required" });
-
+  name = name.toUpperCase();
   try {
     const existing = await Bank.findOne({ name });
     if (existing) {
@@ -37,7 +37,7 @@ router.get("/list", async (req, res) => {
 });
 
 // Delete a bank
-router.delete("/delete/:name",authmiddle, adminonly, async (req, res) => {
+router.delete("/delete/:name", authmiddle, adminonly, async (req, res) => {
   try {
     const { name } = req.params;
     const deleted = await Bank.findOneAndDelete({ name });
