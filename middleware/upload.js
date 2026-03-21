@@ -38,11 +38,11 @@
 
 // module.exports = upload;
 
-// const multer = require("multer");
-// const { CloudinaryStorage } = require("multer-storage-cloudinary");
-// const cloudinary = require("../config/cloudinary");
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary");
 
-// // 🔥 storage define
+// 🔥 storage define
 // const storage = new CloudinaryStorage({
 //   cloudinary: cloudinary,
 //   params: async (req, file) => {
@@ -54,17 +54,6 @@
 //     };
 //   },
 // });
-
-// // 🔥 multer instance
-// const upload = multer({ storage });
-
-// module.exports = upload;
-
-// middleware/upload.js
-import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import cloudinary from "../config/cloudinary";
-
 const storage = new CloudinaryStorage({
   cloudinary,
   params: (req, file) => {
@@ -83,6 +72,7 @@ const storage = new CloudinaryStorage({
   },
 });
 
+// 🔥 multer instance
 const upload = multer({ storage });
 
-export default upload;
+module.exports = upload;
