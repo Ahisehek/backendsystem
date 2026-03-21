@@ -96,8 +96,8 @@ app.use("/ticket", ticketRoutes);
 app.use("/igroup", igroupRoutes);
 
 // ================= STATIC FILES =================
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static("uploads"));
 // ================= SOCKET CONNECTION =================
 io.on("connection", (socket) => {
   console.log("✅ Client connected:", socket.id);
