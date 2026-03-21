@@ -80,8 +80,6 @@ module.exports = (io) => {
         message: "Ticket created successfully",
         ticket: newTicket,
       });
-      console.log("FILE:", req.file); // 👈 add this
-      console.log("BODY:", req.body); // 👈 add this
     } catch (error) {
       console.error("Ticket upload error:", error);
       res.status(500).json({ error: "Server error" });
