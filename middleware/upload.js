@@ -38,21 +38,20 @@
 
 // module.exports = upload;
 
-import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import cloudinary from "../config/cloudinary.js";
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary");
 
+// 🔥 storage define
 const storage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
-    return {
-      folder: "erp_uploads", // sab ek folder me
-      resource_type: "auto", // image + pdf
-      public_id: Date.now() + "-" + file.originalname,
-    };
+  cloudinary: cloudinary,
+  params: {
+    folder: "uploads", // folder name in cloudinary
+    resource_type: "auto", // pdf + image dono support
   },
 });
 
+// 🔥 multer instance
 const upload = multer({ storage });
 
-export default upload;
+module.exports = upload;
