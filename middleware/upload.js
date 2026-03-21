@@ -51,7 +51,6 @@ const storage = new CloudinaryStorage({
     return {
       folder: "uploads",
       resource_type: isPDF ? "raw" : "image",
-      public_id: Date.now() + "-" + file.originalname,
     };
   },
 });
