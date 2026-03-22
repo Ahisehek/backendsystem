@@ -91,10 +91,10 @@ app.use("/unit", unitRoutes);
 app.use("/gst", gstRoutes);
 app.use("/fleet", fleetRoutes);
 app.use("/item", itemRoutes);
-app.use("/vender", authmiddle, venderRoutes);
-app.use("/vehicle", authmiddle, vehicleRoutes);
-app.use("/ticket", authmiddle, ticketRoutes);
-app.use("/igroup", authmiddle, igroupRoutes);
+app.use("/vender", venderRoutes);
+app.use("/vehicle", vehicleRoutes);
+app.use("/ticket", ticketRoutes);
+app.use("/igroup", igroupRoutes);
 
 // ================= STATIC FILES =================
 // app.use("/uploads", express.static(path.join(__dirname, "uploads")));
