@@ -35,7 +35,8 @@ const storage = new CloudinaryStorage({
 
     return {
       folder,
-      resource_type: "auto",
+      // resource_type: "auto",
+      resource_type: isPDF ? "raw" : "image", // 🔥 MUST
       type: "upload",
 
       //  unique id (internal)
