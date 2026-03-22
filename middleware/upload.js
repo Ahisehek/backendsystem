@@ -45,13 +45,9 @@ const cloudinary = require("../config/cloudinary");
 //🔥 storage define
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: async (req, file) => {
-    const isPDF = file.mimetype === "application/pdf";
-
-    return {
-      folder: "uploads",
-      resource_type: isPDF ? "raw" : "image",
-    };
+  params: {
+    folder: "uploads",
+    resource_type: "auto",
   },
 });
 
