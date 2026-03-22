@@ -76,6 +76,7 @@ const storage = new CloudinaryStorage({
     return {
       folder,
       resource_type: "auto",
+      type: "upload",
 
       // 🔥 unique id (internal)
       public_id: Date.now().toString(),
