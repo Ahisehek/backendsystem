@@ -35,7 +35,7 @@ const storage = new CloudinaryStorage({
 
     return {
       folder,
-      resource_type: isPDF ? "raw" : "image",
+      resource_type: "auto",
       public_id: `${Date.now()}-${file.originalname.replace(/\s+/g, "-")}`,
     };
   },
