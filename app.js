@@ -10,6 +10,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
+const authmiddle = require("../middleware/authmiddle");
 
 const app = express();
 const server = http.createServer(app);
@@ -83,17 +84,17 @@ const ticketRoutes = require("./routes/ticket")(io);
 
 // API Routes
 app.use("/api", authRoutes);
-app.use("/api", bankRoutes);
+app.use("/api", authmiddle, bankRoutes);
 
-app.use("/site", siteRoutes);
-app.use("/unit", unitRoutes);
-app.use("/gst", gstRoutes);
-app.use("/fleet", fleetRoutes);
-app.use("/item", itemRoutes);
-app.use("/vender", venderRoutes);
-app.use("/vehicle", vehicleRoutes);
-app.use("/ticket", ticketRoutes);
-app.use("/igroup", igroupRoutes);
+app.use("/site", authmiddle, siteRoutes);
+app.use("/unit", authmiddle, unitRoutes);
+app.use("/gst", authmiddle, gstRoutes);
+app.use("/fleet", authmiddle, fleetRoutes);
+app.use("/item", authmiddle, itemRoutes);
+app.use("/vender", authmiddle, venderRoutes);
+app.use("/vehicle", authmiddle, vehicleRoutes);
+app.use("/ticket", authmiddle, ticketRoutes);
+app.use("/igroup", authmiddle, igroupRoutes);
 
 // ================= STATIC FILES =================
 // app.use("/uploads", express.static(path.join(__dirname, "uploads")));
