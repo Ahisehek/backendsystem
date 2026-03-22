@@ -21,7 +21,7 @@ const cloudinary = require("../config/cloudinary");
 const storage = new CloudinaryStorage({
   cloudinary,
   params: (req, file) => {
-    let folder = "uploads/default";
+    // let folder = "uploads/default";
 
     if (req.originalUrl.includes("/vendor")) {
       folder = "uploads/vendorPics";
