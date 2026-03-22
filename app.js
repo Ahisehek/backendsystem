@@ -84,13 +84,13 @@ const ticketRoutes = require("./routes/ticket")(io);
 
 // API Routes
 app.use("/api", authRoutes);
-app.use("/api", authmiddle, bankRoutes);
+app.use("/api", bankRoutes);
 
-app.use("/site", authmiddle, siteRoutes);
-app.use("/unit", authmiddle, unitRoutes);
-app.use("/gst", authmiddle, gstRoutes);
-app.use("/fleet", authmiddle, fleetRoutes);
-app.use("/item", authmiddle, itemRoutes);
+app.use("/site", siteRoutes);
+app.use("/unit", unitRoutes);
+app.use("/gst", gstRoutes);
+app.use("/fleet", fleetRoutes);
+app.use("/item", itemRoutes);
 app.use("/vender", authmiddle, venderRoutes);
 app.use("/vehicle", authmiddle, vehicleRoutes);
 app.use("/ticket", authmiddle, ticketRoutes);
