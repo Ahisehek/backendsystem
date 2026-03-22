@@ -18,6 +18,7 @@
 const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../config/cloudinary");
+
 const storage = new CloudinaryStorage({
   cloudinary,
   params: (req, file) => {
@@ -33,19 +34,19 @@ const storage = new CloudinaryStorage({
 
     const originalName = file.originalname.replace(/\s+/g, "-");
 
+    // ✅ FIX: detect PDF properly
+    const isPDF = file.mimetype === "application/pdf";
+
     return {
       folder,
-      // resource_type: "auto",
-      resource_type: isPDF ? "raw" : "image", // 🔥 MUST
+      resource_type: isPDF ? "raw" : "image", // ✅ now safe
       type: "upload",
-
-      //  unique id (internal)
       public_id: Date.now().toString(),
-
-      //  original name store as metadata
       filename_override: originalName,
     };
   },
 });
+
 const upload = multer({ storage });
+
 module.exports = upload;
