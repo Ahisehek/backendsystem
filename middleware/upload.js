@@ -14,7 +14,6 @@
 // // 🔥 multer instance
 // const upload = multer({ storage });
 // module.exports = upload;
-
 const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../config/cloudinary");
@@ -32,21 +31,33 @@ const storage = new CloudinaryStorage({
       folder = "uploads/ticketPics";
     }
 
-    const originalName = file.originalname.replace(/\s+/g, "-");
-
-    // ✅ FIX: detect PDF properly
     const isPDF = file.mimetype === "application/pdf";
 
     return {
       folder,
-      resource_type: isPDF ? "raw" : "image", // ✅ now safe
-      type: "upload",
-      public_id: Date.now().toString(),
-      filename_override: originalName,
+      resource_type: isPDF ? "raw" : "image",
+      public_id: `${Date.now()}-${file.originalname.replace(/\s+/g, "-")}`,
     };
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+
+  // ✅ file size limit (5MB)
+  limits: { fileSize: 5 * 1024 * 1024 },
+
+  // ✅ file type validation
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype.startsWith("image/") ||
+      file.mimetype === "application/pdf"
+    ) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only images and PDFs allowed"), false);
+    }
+  },
+});
 
 module.exports = upload;

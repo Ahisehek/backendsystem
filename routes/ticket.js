@@ -43,23 +43,72 @@ module.exports = (io) => {
   //   }
   // });
 
+  // router.post("/add", upload.single("attachment"), async (req, res) => {
+  //   try {
+  //     const {
+  //       siteName,
+  //       employeeName,
+  //       contactNo,
+  //       concernType,
+  //       description,
+  //       createdAt,
+  //     } = req.body;
+
+  //     if (!req.file) {
+  //       return res.status(400).json({ error: "File upload is required." });
+  //     }
+
+  //     // ✅ Cloudinary URL safe extraction
+  //     const fileUrl = req.file.path;
+
+  //     const newTicket = new Ticket({
+  //       siteName,
+  //       employeeName,
+  //       contactNo,
+  //       concernType,
+  //       description,
+  //       createdAt,
+  //       attachment: fileUrl, // ✅ FINAL
+  //     });
+
+  //     await newTicket.save();
+
+  //     // 🔥 Realtime update
+  //     io.emit("ticket_added", newTicket);
+
+  //     res.status(201).json({
+  //       message: "Ticket created successfully",
+  //       ticket: newTicket,
+  //     });
+  //   } catch (error) {
+  //     console.error("Ticket upload error:", error);
+  //     res.status(500).json({ error: "Server error" });
+  //   }
+  // });
+
   router.post("/add", upload.single("attachment"), async (req, res) => {
     try {
-      const {
-        siteName,
-        employeeName,
-        contactNo,
-        concernType,
-        description,
-        createdAt,
-      } = req.body;
+      const { siteName, employeeName, contactNo, concernType, description } =
+        req.body;
 
+      // ✅ File check
       if (!req.file) {
         return res.status(400).json({ error: "File upload is required." });
       }
 
-      // ✅ Cloudinary URL safe extraction
+      // ✅ File type validation (image + pdf)
+      const allowedTypes = ["image/", "application/pdf"];
+      const isValidType = allowedTypes.some((type) =>
+        req.file.mimetype.startsWith(type),
+      );
+
+      if (!isValidType) {
+        return res.status(400).json({ error: "Only images or PDFs allowed." });
+      }
+
+      // ✅ Cloudinary data
       const fileUrl = req.file.path;
+      const publicId = req.file.filename;
 
       const newTicket = new Ticket({
         siteName,
@@ -67,13 +116,14 @@ module.exports = (io) => {
         contactNo,
         concernType,
         description,
-        createdAt,
-        attachment: fileUrl, // ✅ FINAL
+        createdAt: new Date(), // ✅ backend controlled
+        attachment: fileUrl,
+        attachmentId: publicId, // 🔥 future delete ke liye
       });
 
       await newTicket.save();
 
-      // 🔥 Realtime update
+      // 🔥 Realtime event
       io.emit("ticket_added", newTicket);
 
       res.status(201).json({
@@ -81,8 +131,12 @@ module.exports = (io) => {
         ticket: newTicket,
       });
     } catch (error) {
-      console.error("Ticket upload error:", error);
-      res.status(500).json({ error: "Server error" });
+      console.error("❌ Ticket upload error:", error);
+
+      res.status(500).json({
+        error: "Server error",
+        details: error.message, // helpful for debugging
+      });
     }
   });
 
