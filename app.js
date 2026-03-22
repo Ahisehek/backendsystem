@@ -10,7 +10,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
-const authmiddle = require("../middleware/authmiddle");
+const authmiddle = require("./middleware/authmiddle");
 
 const app = express();
 const server = http.createServer(app);
