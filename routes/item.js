@@ -1,14 +1,25 @@
 const express = require("express");
 const router = express.Router();
 const Item = require("../models/Item");
+const authmiddle = require("../middleware/authmiddle");
 
 module.exports = (io) => {
-
-  router.post("/add", async (req, res) => {
-    const { siteName, itemName, itemGroup, gst, hsnCode, partsNo, unit,createdAt } = req.body;
+  router.post("/add", authmiddle, async (req, res) => {
+    const {
+      siteName,
+      itemName,
+      itemGroup,
+      gst,
+      hsnCode,
+      partsNo,
+      unit,
+      createdAt,
+    } = req.body;
 
     if (!itemName || !hsnCode) {
-      return res.status(400).json({ message: "Item name and HSN code are required" });
+      return res
+        .status(400)
+        .json({ message: "Item name and HSN code are required" });
     }
 
     try {
@@ -30,7 +41,9 @@ module.exports = (io) => {
       //io.emit("massage",added);
 
       // Respond to client
-      res.status(201).json({ message: "Item added successfully", item: newItem });
+      res
+        .status(201)
+        .json({ message: "Item added successfully", item: newItem });
     } catch (err) {
       console.error("Error saving item:", err);
       res.status(500).json({ message: "Error saving item" });
@@ -59,7 +72,7 @@ module.exports = (io) => {
       const updatedItem = await Item.findByIdAndUpdate(
         req.params.id,
         { status },
-        { new: true }
+        { new: true },
       );
 
       if (!updatedItem) {

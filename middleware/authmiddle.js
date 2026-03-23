@@ -2,10 +2,10 @@ const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
   const token = req.cookies.token; // 👈 important
-  console.log("TOKEN:", token);
+  // console.log("TOKEN:", token);
 
   if (!token) {
-    return res.status(401).json({ message: "No token" });
+    return res.status(401).json({ message: "unauthorized" });
   }
 
   try {
