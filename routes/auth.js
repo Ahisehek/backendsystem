@@ -214,7 +214,7 @@ router.get("/me", authmiddle, async (req, res) => {
   }
 });
 // ================= USER PROFILE =================
-router.get("/user-profile", auth, async (req, res) => {
+router.get("/user-profile", authmiddle, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("name email");
 
