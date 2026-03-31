@@ -47,7 +47,7 @@
 // module.exports = upload;
 
 const multer = require("multer");
-const ImageKit = require("../config/imagekit");
+const imagekit = require("../config/imagekit"); // ✅ FIX
 
 // ✅ Multer memory storage
 const storage = multer.memoryStorage();
@@ -55,10 +55,8 @@ const storage = multer.memoryStorage();
 const upload = multer({
   storage,
 
-  // ✅ file size limit (5MB)
   limits: { fileSize: 5 * 1024 * 1024 },
 
-  // ✅ file type validation
   fileFilter: (req, file, cb) => {
     if (
       file.mimetype.startsWith("image/") ||
@@ -71,7 +69,7 @@ const upload = multer({
   },
 });
 
-// ✅ Upload function (ImageKit)
+// ✅ Upload function
 const uploadToImageKit = async (req) => {
   if (!req.file) return null;
 
@@ -86,7 +84,7 @@ const uploadToImageKit = async (req) => {
   }
 
   const result = await imagekit.upload({
-    file: req.file.buffer, // buffer upload
+    file: req.file.buffer,
     fileName: `${Date.now()}-${req.file.originalname.replace(/\s+/g, "-")}`,
     folder: folder,
     useUniqueFileName: false,
