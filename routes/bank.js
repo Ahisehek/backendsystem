@@ -7,7 +7,7 @@ const authmiddle = require("../middleware/authmiddle");
 
 // Add a bank
 router.post("/add", authmiddle, adminonly, async (req, res) => {
-  const { name } = req.body;
+  let { name } = req.body;
 
   if (!name) return res.status(400).json({ message: "Bank name is required" });
   name = name.toUpperCase();
