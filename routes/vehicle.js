@@ -144,6 +144,7 @@ const express = require("express");
 const router = express.Router();
 const Vehicle = require("../models/Vehicle");
 const { upload, uploadToImageKit } = require("../middleware/upload");
+const authmiddle = require("../middleware/authmiddle");
 
 module.exports = (io) => {
   // ✅ Multiple file fields
@@ -154,7 +155,7 @@ module.exports = (io) => {
   ]);
 
   // ✅ ADD VEHICLE
-  router.post("/add", uploadFields, async (req, res) => {
+  router.post("/add", authmiddle, uploadFields, async (req, res) => {
     try {
       const {
         openingDate,
@@ -216,7 +217,7 @@ module.exports = (io) => {
   });
 
   // ✅ GET ALL
-  router.get("/all", async (req, res) => {
+  router.get("/all", authmiddle, async (req, res) => {
     try {
       const vehicles = await Vehicle.find().sort({ createdAt: -1 });
       res.status(200).json(vehicles);
@@ -227,7 +228,7 @@ module.exports = (io) => {
   });
 
   // ✅ UPDATE STATUS
-  router.patch("/status/:id", async (req, res) => {
+  router.patch("/status/:id", authmiddle, async (req, res) => {
     const { status } = req.body;
 
     if (!["approved", "pending", "rejected"].includes(status)) {

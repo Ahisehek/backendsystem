@@ -181,12 +181,13 @@
 const express = require("express");
 const { upload, uploadToImageKit } = require("../middleware/upload");
 const Ticket = require("../models/Ticket");
+const authmiddle = require("../middleware/authmiddle");
 
 module.exports = (io) => {
   const router = express.Router();
 
   // ✅ CREATE TICKET
-  router.post("/add", upload.single("attachment"), async (req, res) => {
+  router.post("/add",authmiddle, upload.single("attachment"), async (req, res) => {
     try {
       const { siteName, employeeName, contactNo, concernType, description } =
         req.body;
@@ -240,7 +241,7 @@ module.exports = (io) => {
   });
 
   // ✅ GET ALL TICKETS
-  router.get("/all", async (req, res) => {
+  router.get("/all",authmiddle, async (req, res) => {
     try {
       const tickets = await Ticket.find().sort({ createdAt: -1 }); // latest first
       res.status(200).json(tickets);
@@ -251,7 +252,7 @@ module.exports = (io) => {
   });
 
   // ✅ UPDATE STATUS
-  router.patch("/status/:id", async (req, res) => {
+  router.patch("/status/:id",authmiddle, async (req, res) => {
     const { status } = req.body;
 
     if (!["approved", "pending", "rejected"].includes(status)) {

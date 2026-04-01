@@ -50,7 +50,7 @@ module.exports = (io) => {
     }
   });
 
-  router.get("/all", async (req, res) => {
+  router.get("/all", authmiddle, async (req, res) => {
     try {
       const items = await Item.find();
       res.status(200).json(items);
@@ -61,7 +61,7 @@ module.exports = (io) => {
   });
 
   // PATCH route for updating status (optional)
-  router.patch("/status/:id", async (req, res) => {
+  router.patch("/status/:id", authmiddle, async (req, res) => {
     const { status } = req.body;
 
     if (!["approved", "pending", "rejected"].includes(status)) {
