@@ -5,6 +5,8 @@ const attachmentSchema = new mongoose.Schema({
   panCard: String,
   cancelledCheque: String,
   msme: String,
+  itr: String,
+  rent: String,
 });
 
 const venderSchema = new mongoose.Schema({
@@ -21,12 +23,12 @@ const venderSchema = new mongoose.Schema({
   panNo: String,
   gstNo: String,
   msmeNo: String,
-   accountGroup: String,
+  accountGroup: String,
   gstState: String,
   tds: String,
 
   msmeType: String,
- 
+
   attachments: attachmentSchema,
   createdAt: { type: Date, default: Date.now },
   status: {
@@ -34,8 +36,7 @@ const venderSchema = new mongoose.Schema({
     enum: ["pending", "approved", "rejected"],
     default: "pending",
   },
-}, );
-
+});
 
 const Vender = mongoose.models.Vender || mongoose.model("Vender", venderSchema);
 

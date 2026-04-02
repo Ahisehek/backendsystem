@@ -203,6 +203,8 @@ module.exports = (io) => {
     { name: "panCard", maxCount: 1 },
     { name: "cancelledCheque", maxCount: 1 },
     { name: "msme", maxCount: 1 },
+    { name: "itr", maxCount: 1 },
+    { name: "rent", maxCount: 1 },
   ]);
 
   // ✅ ADD VENDOR
